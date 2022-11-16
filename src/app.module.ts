@@ -1,44 +1,33 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService} from '@nestjs/config'
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-
-import { UsersModule } from './users/users.module';
-import { AuthController } from './auth/auth.controller';
+import { UsersModule } from './user/users.module';
+import { configEnvPath } from './common/helper/env.helper';
+import { CustomerModule } from './customer/customer.module';
+import { TypeOrmConfigSerivce } from './shared/typeorm/typeorm.service';
+import { AbilityModule } from './ability/ability.module';
 import { AuthModule } from './auth/auth.module';
-import { AuthService } from './auth/auth.service';
-
+import { TaskModule } from './task/task.module';
+import { ProjectModule } from './project/project.module';
+import { TimesheetModule } from './timesheet/timesheet.module';
+import { ProjectMemberUserModule } from './project_member_user/project_member_user.module';
 
 @Module({
   imports: [
-    
-    ConfigModule.forRoot({
-      envFilePath: 'src/common/envs/development.env',
-      isGlobal: true,
-    }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
-        const database = configService.get('MONGO_DATABASE');
-        const host = configService.get('MONGO_HOST');
-        const port = configService.get('MONGO_PORT');
-        return {
-          type: 'mongodb',
-          host,
-          port,
-          database,
-          authSource: 'admin',
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
-          synchronize: true,
-        };
-      },
-    }),
+    ConfigModule.forRoot(configEnvPath),
+    TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigSerivce }),
     UsersModule,
+    CustomerModule,
+    AbilityModule,
     AuthModule,
+    TaskModule,
+    ProjectModule,
+    TimesheetModule,
+    ProjectMemberUserModule,
   ],
-  controllers: [AppController, AuthController],
-  providers: [AppService, AuthService],
+  controllers: [AppController],
+  providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

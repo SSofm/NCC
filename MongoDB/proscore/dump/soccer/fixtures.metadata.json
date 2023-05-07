@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"c2f6cbc9a58e44d9904ab5afe3317c8d","collectionName":"fixtures","type":"collection"}
